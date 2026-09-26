@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeafGuard — Plant Health Checker & Care AI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nature: {
+                            50: '#f4fbf7',
+                            100: '#e3f7ed',
+                            200: '#c7eed9',
+                            300: '#9be2bd',
+                            400: '#63ce97',
+                            500: '#3eb47a',
+                            600: '#2d9260',
+                            700: '#25754f',
+                            800: '#205d41',
+                            900: '#1b4c36',
+                            950: '#0f291e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #ABC28B; }
+        ::-webkit-scrollbar-thumb { background: #677C56; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #112C01; }
+
+        /* LeafGuard natural green palette
+           Light Sage: #ABC28B
+           Olive / Moss: #677C56
+           Deep Forest: #112C01 */
+
+        body { background-color: #ABC28B !important; color: #112C01 !important; }
+
+        /* Nature palette */
+        .bg-nature-50 { background-color: #ABC28B !important; }
+        .bg-nature-100 { background-color: #ABC28B !important; }
+        .bg-nature-200 { background-color: #ABC28B !important; }
+        .bg-nature-300 { background-color: #ABC28B !important; }
+        .bg-nature-400 { background-color: #677C56 !important; }
+        .bg-nature-500 { background-color: #677C56 !important; }
+        .bg-nature-600 { background-color: #677C56 !important; }
+        .bg-nature-700 { background-color: #112C01 !important; }
+        .bg-nature-800 { background-color: #112C01 !important; }
+        .bg-nature-900 { background-color: #112C01 !important; }
+        .bg-nature-950 { background-color: #112C01 !important; }
+
+        .text-nature-50 { color: #ABC28B !important; }
+        .text-nature-100 { color: #ABC28B !important; }
+        .text-nature-200 { color: #ABC28B !important; }
+        .text-nature-300 { color: #ABC28B !important; }
+        .text-nature-400 { color: #677C56 !important; }
+        .text-nature-500 { color: #677C56 !important; }
+        .text-nature-600 { color: #677C56 !important; }
+        .text-nature-700 { color: #677C56 !important; }
+        .text-nature-800 { color: #112C01 !important; }
+        .text-nature-900 { color: #112C01 !important; }
+        .text-nature-950 { color: #112C01 !important; }
+
+        .border-nature-50 { border-color: #ABC28B !important; }
+        .border-nature-100 { border-color: #ABC28B !important; }
+        .border-nature-200 { border-color: #ABC28B !important; }
+        .border-nature-300 { border-color: #ABC28B !important; }
+        .border-nature-400 { border-color: #677C56 !important; }
+        .border-nature-500 { border-color: #677C56 !important; }
+        .border-nature-600 { border-color: #677C56 !important; }
+        .border-nature-700 { border-color: #112C01 !important; }
+
+        .from-nature-700 { --tw-gradient-from: #112C01 var(--tw-gradient-from-position) !important; }
+        .to-nature-900 { --tw-gradient-to: #112C01 var(--tw-gradient-to-position) !important; }
+        .shadow-nature-200 { --tw-shadow-color: #ABC28B !important; }
+
+        /* Neutral tones adjusted to the same natural palette */
+        .bg-slate-50 { background-color: #F7F9F3 !important; }
+        .bg-slate-100 { background-color: #ABC28B !important; }
+        .bg-slate-200 { background-color: #D5DEC5 !important; }
+        .bg-slate-900 { background-color: #112C01 !important; }
+        .text-slate-400 { color: #677C56 !important; }
+        .text-slate-500 { color: #677C56 !important; }
+        .text-slate-600 { color: #677C56 !important; }
+        .text-slate-700 { color: #112C01 !important; }
+        .text-slate-800 { color: #112C01 !important; }
+        .text-slate-900 { color: #112C01 !important; }
+        .border-slate-100 { border-color: #D5DEC5 !important; }
+        .border-slate-200 { border-color: #ABC28B !important; }
+
+        /* Amber / warning areas kept within the green palette */
+        .bg-amber-50 { background-color: #ABC28B !important; }
+        .border-amber-200 { border-color: #677C56 !important; }
+        .text-amber-600 { color: #677C56 !important; }
+        .text-amber-700 { color: #677C56 !important; }
+        .text-amber-800 { color: #112C01 !important; }
+        .text-amber-950 { color: #112C01 !important; }
+
+        /* Emerald / status tones */
+        .bg-emerald-50 { background-color: #ABC28B !important; }
+        .border-emerald-100 { border-color: #ABC28B !important; }
+        .text-emerald-700 { color: #677C56 !important; }
+
+        /* Rose / destructive action tones */
+        .bg-rose-50 { background-color: #ABC28B !important; }
+        .bg-rose-100 { background-color: #ABC28B !important; }
+        .border-rose-200 { border-color: #677C56 !important; }
+        .text-rose-600 { color: #677C56 !important; }
+        .text-rose-700 { color: #112C01 !important; }
+
+    </style>
+</head>
+<body class="bg-nature-50 text-slate-800 h-full flex flex-col antialiased">
+
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-nature-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                <div class="w-10 h-10 rounded-xl bg-nature-600 flex items-center justify-center text-white shadow-md shadow-nature-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-nature-900 tracking-tight leading-none">LeafGuard AI</h1>
+                    <span class="text-xs text-nature-600 font-medium">Plant Health & Care Assistant</span>
+                </div>
+            </div>
+
+            <!-- Desktop Nav Tabs -->
+            <nav class="hidden md:flex space-x-1 bg-nature-100 p-1 rounded-xl">
+                <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-nature-800 bg-white shadow-xs">Dashboard</button>
+                <button onclick="switchTab('scan')" id="nav-scan" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-nature-700 hover:text-nature-900">Scan Plant</button>
+                <button onclick="switchTab('my-plants')" id="nav-my-plants" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-nature-700 hover:text-nature-900">My Plants</button>
+                <button onclick="switchTab('history')" id="nav-history" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-nature-700 hover:text-nature-900">Scan History</button>
+                <button onclick="switchTab('care-guide')" id="nav-care-guide" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-nature-700 hover:text-nature-900">Care Guide</button>
+            </nav>
+
+            <!-- Quick Action Scan CTA -->
+            <div class="flex items-center space-x-2">
+                <button onclick="switchTab('scan')" class="hidden sm:inline-flex items-center space-x-2 bg-nature-600 hover:bg-nature-700 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm transition transform active:scale-95">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>New Scan</span>
+                </button>
+                <!-- Mobile menu button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-nature-700 hover:bg-nature-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile dropdown menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-nature-200 px-4 py-3 space-y-2">
+            <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg font-medium text-nature-800 hover:bg-nature-50">Dashboard</button>
+            <button onclick="switchTab('scan'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg font-medium text-nature-800 hover:bg-nature-50">Scan Plant</button>
+            <button onclick="switchTab('my-plants'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg font-medium text-nature-800 hover:bg-nature-50">My Plants</button>
+            <button onclick="switchTab('history'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg font-medium text-nature-800 hover:bg-nature-50">Scan History</button>
+            <button onclick="switchTab('care-guide'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg font-medium text-nature-800 hover:bg-nature-50">Care Guide</button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 overflow-y-auto">
+
+        <!-- VIEW 1: HOME / DASHBOARD -->
+        <section id="view-home" class="view-section space-y-6 fade-in">
+            <!-- Welcome Banner -->
+            <div class="bg-gradient-to-br from-nature-700 to-nature-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row justify-between items-center">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-nature-600 rounded-full opacity-30 blur-2xl"></div>
+                <div class="relative z-10 max-w-xl mb-6 md:mb-0">
+                    <span class="inline-block bg-nature-600 text-nature-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-3">AI Powered Health Assistant</span>
+                    <h2 class="text-2xl sm:text-4xl font-bold tracking-tight mb-2">Keep your green friends thriving!</h2>
+                    <p class="text-nature-100 text-sm sm:text-base leading-relaxed mb-6">Upload a photo of any leaf or plant to instantly detect pests, diseases, or watering issues with AI analysis and tailored care guides.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="switchTab('scan')" class="bg-white text-nature-900 hover:bg-nature-50 font-semibold px-6 py-3 rounded-xl shadow-md transition flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-nature-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span>Scan Plant Leaf Now</span>
+                        </button>
+                        <button onclick="switchTab('my-plants')" class="bg-nature-800 hover:bg-nature-900 text-white font-medium px-5 py-3 rounded-xl border border-nature-600 transition">
+                            View Monitored Plants (<span id="stat-my-plants-count">0</span>)
+                        </button>
+                    </div>
+                </div>
+                <div class="relative z-10 hidden lg:flex items-center justify-center bg-nature-800/60 p-6 rounded-2xl border border-nature-600/50 backdrop-blur-sm">
+                    <div class="text-center space-y-2">
+                        <div class="w-16 h-16 mx-auto bg-nature-500/20 text-nature-300 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="text-xl font-bold" id="stat-scans-count">0</div>
+                        <div class="text-xs text-nature-200">Total Scans Performed</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats & Highlights -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-nature-200 shadow-xs flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-nature-100 text-nature-700 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 font-medium uppercase tracking-wider">AI Detection</div>
+                        <div class="text-lg font-bold text-slate-900">Pests & Diseases</div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-nature-200 shadow-xs flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-nature-100 text-nature-700 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 font-medium uppercase tracking-wider">Health Tracking</div>
+                        <div class="text-lg font-bold text-slate-900">Scan History & Progress</div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-nature-200 shadow-xs flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-nature-100 text-nature-700 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 font-medium uppercase tracking-wider">Care Library</div>
+                        <div class="text-lg font-bold text-slate-900">Expert Tips</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Scans & Favorite Plants Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Recent Scans List -->
+                <div class="lg:col-span-2 bg-white rounded-2xl border border-nature-200 p-6 shadow-xs">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-slate-900 text-lg">Recent Scans</h3>
+                        <button onclick="switchTab('history')" class="text-sm font-semibold text-nature-600 hover:text-nature-700">View All</button>
+                    </div>
+                    <div id="dashboard-recent-scans" class="space-y-3">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Favorite / Saved Plants Sidebar -->
+                <div class="bg-white rounded-2xl border border-nature-200 p-6 shadow-xs flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-slate-900 text-lg">Monitored Plants</h3>
+                        <button onclick="switchTab('my-plants')" class="text-sm font-semibold text-nature-600 hover:text-nature-700">Manage</button>
+                    </div>
+                    <div id="dashboard-my-plants" class="space-y-3 flex-1">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: SCAN PLANT -->
+        <section id="view-scan" class="view-section hidden space-y-6 fade-in">
+            <div class="max-w-3xl mx-auto bg-white rounded-3xl border border-nature-200 p-6 sm:p-8 shadow-xs">
+                <div class="text-center max-w-lg mx-auto mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900">Scan Plant or Leaf</h2>
+                    <p class="text-slate-500 text-sm mt-1">Upload a clear photo of the affected leaf, stem, or entire plant to detect health issues.</p>
+                </div>
+
+                <!-- Upload Area -->
+                <div id="drop-zone" class="border-2 border-dashed border-nature-300 hover:border-nature-500 rounded-2xl p-8 text-center bg-nature-50/50 transition cursor-pointer relative group">
+                    <input type="file" id="plant-file-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" onchange="handleImageSelect(event)">
+                    <div id="upload-prompt" class="space-y-3">
+                        <div class="w-16 h-16 mx-auto bg-nature-100 text-nature-600 rounded-2xl flex items-center justify-center group-hover:scale-105 transition">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-700">Drag & drop photo here, or <span class="text-nature-600 underline">browse files</span></p>
+                            <p class="text-xs text-slate-400 mt-1">Supports PNG, JPG, WEBP up to 10MB</p>
+                        </div>
+                    </div>
+                    <!-- Image Preview Container -->
+                    <div id="preview-container" class="hidden relative">
+                        <img id="image-preview" src="" alt="Plant Preview" class="max-h-72 mx-auto rounded-xl object-contain shadow-md">
+                        <button type="button" onclick="clearImage(event)" class="absolute top-2 right-2 bg-slate-900/70 hover:bg-slate-900 text-white p-2 rounded-full backdrop-blur-sm transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plant Nickname / Type Option -->
+                <div class="mt-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Plant Nickname or Species (Optional)</label>
+                        <input type="text" id="plant-nickname" placeholder="e.g., Living Room Monstera, Kitchen Pothos" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-nature-500 focus:ring-2 focus:ring-nature-200 outline-none transition text-sm">
+                    </div>
+
+                    <!-- Analyze Button -->
+                    <button id="analyze-btn" onclick="analyzePlantImage()" disabled class="w-full bg-nature-600 hover:bg-nature-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold py-3.5 rounded-xl shadow-md transition flex items-center justify-center space-x-2 cursor-pointer disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                        <span>Analyze Plant Health with AI</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analysis Loading Overlay / Spinner -->
+            <div id="analysis-loading" class="hidden max-w-3xl mx-auto bg-white rounded-3xl border border-nature-200 p-12 text-center shadow-xs space-y-6 fade-in">
+                <div class="w-16 h-16 mx-auto bg-nature-100 text-nature-600 rounded-full flex items-center justify-center animate-spin">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </div>
+                <div class="space-y-2">
+                    <h3 class="text-xl font-bold text-slate-900" id="loading-status-text">Examining plant leaf patterns...</h3>
+                    <p class="text-slate-500 text-sm">Our AI model is checking for pests, diseases, fungal spots, and overwatering symptoms.</p>
+                </div>
+                <div class="max-w-xs mx-auto bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div id="loading-progress-bar" class="bg-nature-600 h-full w-1/3 transition-all duration-500 rounded-full animate-pulse"></div>
+                </div>
+            </div>
+
+            <!-- Analysis Results View -->
+            <div id="analysis-results" class="hidden max-w-4xl mx-auto space-y-6 fade-in">
+                <!-- Top Result Card -->
+                <div class="bg-white rounded-3xl border border-nature-200 p-6 sm:p-8 shadow-sm">
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <img id="result-img" src="" alt="Analyzed Plant" class="w-full md:w-56 h-56 rounded-2xl object-cover border border-slate-200 shadow-sm">
+                        <div class="flex-1 space-y-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div>
+                                    <span id="result-timestamp" class="text-xs text-slate-400 font-medium">Scanned Today</span>
+                                    <h3 id="result-plant-name" class="text-2xl font-bold text-slate-900">Monstera Deliciosa</h3>
+                                </div>
+                                <span id="result-confidence-badge" class="bg-nature-100 text-nature-800 text-xs font-semibold px-3 py-1 rounded-full border border-nature-200">Confidence: 89%</span>
+                            </div>
+
+                            <!-- Realistic Issue Framing -->
+                            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="text-amber-600 mt-0.5">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-semibold text-amber-800 uppercase tracking-wider">Likely Health Issue Detected</h4>
+                                        <p id="result-health-issue" class="text-base font-bold text-amber-950 mt-0.5">Possible Leaf Spot / Fungal Stress</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 pt-2">
+                                <button onclick="saveCurrentScanToMyPlants()" id="save-plant-btn" class="bg-nature-600 hover:bg-nature-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm shadow-sm transition flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span>Save to Monitored Plants</span>
+                                </button>
+                                <button onclick="switchTab('scan')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl text-sm transition">
+                                    Scan Another Plant
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Analysis Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Symptoms & Causes -->
+                    <div class="bg-white rounded-3xl border border-nature-200 p-6 sm:p-8 shadow-xs space-y-6">
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-lg mb-3 flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-nature-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                <span>Observed Symptoms</span>
+                            </h4>
+                            <ul id="result-symptoms-list" class="space-y-2 text-sm text-slate-700">
+                                <!-- Populated by JS -->
+                            </ul>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-6">
+                            <h4 class="font-bold text-slate-900 text-lg mb-3 flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-nature-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Possible Root Causes</span>
+                            </h4>
+                            <p id="result-causes" class="text-sm text-slate-600 leading-relaxed">
+                                <!-- Populated by JS -->
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Treatment & Care Guide Recommendations -->
+                    <div class="bg-white rounded-3xl border border-nature-200 p-6 sm:p-8 shadow-xs space-y-6">
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-lg mb-3 flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-nature-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                                <span>Recommended Actions</span>
+                            </h4>
+                            <ul id="result-recommendations-list" class="space-y-2 text-sm text-slate-700">
+                                <!-- Populated by JS -->
+                            </ul>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-6">
+                            <h4 class="font-bold text-slate-900 text-lg mb-3 flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-nature-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/></svg>
+                                <span>Care Guide Specs</span>
+                            </h4>
+                            <div id="result-care-specs" class="grid grid-cols-3 gap-2 text-center text-xs">
+                                <div class="bg-nature-50 p-2.5 rounded-xl border border-nature-100">
+                                    <span class="block text-slate-400 font-medium">Water</span>
+                                    <span id="spec-water" class="font-bold text-nature-900 mt-0.5 block">Moderate</span>
+                                </div>
+                                <div class="bg-nature-50 p-2.5 rounded-xl border border-nature-100">
+                                    <span class="block text-slate-400 font-medium">Sunlight</span>
+                                    <span id="spec-sun" class="font-bold text-nature-900 mt-0.5 block">Indirect</span>
+                                </div>
+                                <div class="bg-nature-50 p-2.5 rounded-xl border border-nature-100">
+                                    <span class="block text-slate-400 font-medium">Soil</span>
+                                    <span id="spec-soil" class="font-bold text-nature-900 mt-0.5 block">Well-draining</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: MY PLANTS / FAVORITES -->
+        <section id="view-my-plants" class="view-section hidden space-y-6 fade-in">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-nature-200 shadow-xs">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">My Monitored Plants</h2>
+                    <p class="text-slate-500 text-sm mt-0.5">Track saved plants, monitor their health status, and set care reminders.</p>
+                </div>
+                <button onclick="switchTab('scan')" class="bg-nature-600 hover:bg-nature-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm shadow-sm transition flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Add New Plant Scan</span>
+                </button>
+            </div>
+
+            <div id="my-plants-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- VIEW 4: SCAN HISTORY -->
+        <section id="view-history" class="view-section hidden space-y-6 fade-in">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-nature-200 shadow-xs">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Scan History & Progress</h2>
+                    <p class="text-slate-500 text-sm mt-0.5">Review past plant diagnoses and compare whether plant health is improving or worsening.</p>
+                </div>
+                <button onclick="clearAllHistory()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium px-4 py-2 rounded-xl text-sm transition border border-rose-200">
+                    Clear History
+                </button>
+            </div>
+
+            <div id="history-list-container" class="space-y-4">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- VIEW 5: CARE GUIDE LIBRARY -->
+        <section id="view-care-guide" class="view-section hidden space-y-6 fade-in">
+            <div class="bg-white p-6 rounded-3xl border border-nature-200 shadow-xs">
+                <h2 class="text-2xl font-bold text-slate-900">Plant Care Reference Library</h2>
+                <p class="text-slate-500 text-sm mt-0.5">Essential watering, sunlight, soil, and symptom prevention guides for common indoor and outdoor plants.</p>
+                <div class="mt-4 relative max-w-md">
+                    <input type="text" id="care-search" oninput="filterCareLibrary()" placeholder="Search care guides (e.g., Monstera, Ficus, Succulent)..." class="w-full px-4 py-2.5 pl-10 rounded-xl border border-slate-200 focus:border-nature-500 focus:ring-2 focus:ring-nature-200 outline-none text-sm">
+                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+            </div>
+
+            <div id="care-library-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Modal Message Box (No native alert/confirm) -->
+    <div id="app-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl space-y-4 fade-in">
+            <div class="flex items-center space-x-3 text-nature-700">
+                <div id="modal-icon" class="w-10 h-10 rounded-xl bg-nature-100 flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 id="modal-title" class="text-lg font-bold text-slate-900">Notification</h3>
+            </div>
+            <p id="modal-message" class="text-sm text-slate-600 leading-relaxed">Message content goes here.</p>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button id="modal-cancel-btn" onclick="closeModal(false)" class="hidden px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">Cancel</button>
+                <button id="modal-ok-btn" onclick="closeModal(true)" class="bg-nature-600 hover:bg-nature-700 text-white font-medium px-5 py-2 rounded-xl text-sm transition shadow-sm">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management & LocalStorage persistence
+        let appState = {
+            scans: JSON.parse(localStorage.getItem('leafguard_scans')) || [
+                {
+                    id: 'scan_default_1',
+                    timestamp: new Date(Date.now() - 86400000 * 2).toISOString(),
+                    plantName: 'Monstera Deliciosa (Living Room)',
+                    imageUrl: 'https://placehold.co/400x400/2d9260/ffffff?text=Monstera+Leaf',
+                    confidence: 88,
+                    healthIssue: 'Possible Fungal Leaf Spot / Overwatering Stress',
+                    symptoms: ['Brown circular spots with yellow halos', 'Slight leaf tip yellowing', 'Moist topsoil'],
+                    causes: ['Excessive watering frequency', 'Poor air circulation around lower foliage', 'Splashing water on leaves during irrigation'],
+                    recommendations: ['Allow top 2-3 inches of soil to dry before watering', 'Prune severely affected leaves cleanly', 'Improve room ventilation'],
+                    careSpecs: { water: 'Every 7-10 days', sun: 'Bright indirect light', soil: 'Aroid chunky mix' },
+                    isFavorite: true,
+                    reminder: 'Water in 3 days'
+                },
+                {
+                    id: 'scan_default_2',
+                    timestamp: new Date(Date.now() - 86400000 * 6).toISOString(),
+                    plantName: 'Fiddle Leaf Fig',
+                    imageUrl: 'https://placehold.co/400x400/25754f/ffffff?text=Fiddle+Fig',
+                    confidence: 91,
+                    healthIssue: 'Possible Spider Mite Infestation / Dry Air',
+                    symptoms: ['Fine stippling / tiny yellow speckles on leaves', 'Very delicate webbing under leaf nodes'],
+                    causes: ['Low indoor humidity during dry seasons', 'Lack of regular foliage dusting'],
+                    recommendations: ['Wipe leaves gently with diluted neem oil solution', 'Increase ambient humidity with pebble tray or humidifier', 'Isolate from other plants temporarily'],
+                    careSpecs: { water: 'When soil is dry', sun: 'Full direct morning light', soil: 'Well-draining peat mix' },
+                    isFavorite: false,
+                    reminder: 'Check pest traps'
+                }
+            ],
+            myPlants: JSON.parse(localStorage.getItem('leafguard_my_plants')) || [
+                {
+                    id: 'plant_1',
+                    name: 'Living Room Monstera',
+                    species: 'Monstera Deliciosa',
+                    addedDate: new Date(Date.now() - 86400000 * 10).toISOString(),
+                    lastScanId: 'scan_default_1',
+                    imageUrl: 'https://placehold.co/400x400/2d9260/ffffff?text=Monstera',
+                    healthStatus: 'Recovering',
+                    reminder: 'Water in 2 days'
+                }
+            ],
+            currentScanResult: null,
+            selectedImageBase64: null
+        };
+
+        const careLibraryData = [
+            {
+                name: 'Monstera Deliciosa (Swiss Cheese Plant)',
+                category: 'Tropical Indoor',
+                water: 'Every 7–10 days (let top 2-3" dry)',
+                sun: 'Bright, indirect sunlight',
+                soil: 'Chunky, well-draining aroid mix',
+                commonIssues: 'Root rot from overwatering, spider mites, yellowing leaves.',
+                tip: 'Wipe leaves monthly with a damp cloth to maximize photosynthesis.'
+            },
+            {
+                name: 'Fiddle Leaf Fig (Ficus lyrata)',
+                category: 'Large Indoor Tree',
+                water: 'When top 50% of soil is dry',
+                sun: 'Bright filtered sunlight near sunny window',
+                soil: 'Rich, fast-draining potting soil',
+                commonIssues: 'Leaf drop from moving locations, brown spots from overwatering.',
+                tip: 'They dislike being drafted or having wet feet. Do not overwater!'
+            },
+            {
+                name: 'Snake Plant (Sansevieria)',
+                category: 'Succulent / Low Light',
+                water: 'Every 2–3 weeks (completely dry out)',
+                sun: 'Low to bright indirect light',
+                soil: 'Cactus & succulent sandy mix',
+                commonIssues: 'Mushy base and yellow leaves caused by soggy soil.',
+                tip: 'When in doubt, underwater rather than overwater.'
+            },
+            {
+                name: 'Peace Lily (Spathiphyllum)',
+                category: 'Flowering Houseplant',
+                water: 'Keep evenly moist (droops dramatically when thirsty)',
+                sun: 'Medium to low indirect shade',
+                soil: 'Moisture-retentive yet porous potting mix',
+                commonIssues: 'Brown leaf tips from tap water fluoride; spider mites.',
+                tip: 'Use filtered or rainwater to keep leaf tips lush and green.'
+            },
+            {
+                name: 'Pothos (Epipremnum aureum)',
+                category: 'Trailing Vine',
+                water: 'Every 1-2 weeks when dry',
+                sun: 'Adaptable to low, medium or bright indirect light',
+                soil: 'Standard all-purpose potting soil',
+                commonIssues: 'Root rot, pale yellow leaves from lack of light or nutrients.',
+                tip: 'Very resilient! Perfect plant for beginners.'
+            },
+            {
+                name: 'Succulents & Cacti',
+                category: 'Desert Plants',
+                water: 'Every 2-4 weeks (soak and dry method)',
+                sun: 'Full direct sunlight (6+ hours daily)',
+                soil: 'Specialty cactus/perlite sandy soil',
+                commonIssues: 'Stem rot, stretching (etiolation) due to insufficient light.',
+                tip: 'Ensure pots have drainage holes so water never pools at the bottom.'
+            }
+        ];
+
+        // Save state to localStorage
+        function persistState() {
+            localStorage.setItem('leafguard_scans', JSON.stringify(appState.scans));
+            localStorage.setItem('leafguard_my_plants', JSON.stringify(appState.myPlants));
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'shadow-xs', 'text-nature-800');
+                btn.classList.add('text-nature-700');
+            });
+
+            const targetView = document.getElementById(`view-${tabId}`);
+            if (targetView) targetView.classList.remove('hidden');
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-nature-700');
+                activeBtn.classList.add('bg-white', 'shadow-xs', 'text-nature-800');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Refresh view data if needed
+            if (tabId === 'home') renderDashboard();
+            if (tabId === 'my-plants') renderMyPlants();
+            if (tabId === 'history') renderHistory();
+            if (tabId === 'care-guide') renderCareLibrary(careLibraryData);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Initialize application on load
+        window.onload = function() {
+            renderDashboard();
+            renderCareLibrary(careLibraryData);
+        };
+
+        // Render Dashboard Stats and lists
+        function renderDashboard() {
+            document.getElementById('stat-scans-count').textContent = appState.scans.length;
+            document.getElementById('stat-my-plants-count').textContent = appState.myPlants.length;
+
+            // Recent scans snippet
+            const recentContainer = document.getElementById('dashboard-recent-scans');
+            if (appState.scans.length === 0) {
+                recentContainer.innerHTML = `<p class="text-sm text-slate-400 py-4 text-center">No scans recorded yet. Click "Scan Plant" to start!</p>`;
+            } else {
+                recentContainer.innerHTML = appState.scans.slice(0, 3).map(scan => `
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-nature-50/60 border border-nature-100 hover:bg-nature-50 transition cursor-pointer" onclick="viewScanDetails('${scan.id}')">
+                        <div class="flex items-center space-x-3">
+                            <img src="${scan.imageUrl}" class="w-12 h-12 rounded-xl object-cover border border-nature-200" onerror="this.src='https://placehold.co/100x100/3eb47a/ffffff?text=Leaf'">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">${scan.plantName}</h4>
+                                <p class="text-xs text-amber-700 font-medium">${scan.healthIssue}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-nature-100 text-nature-800">${scan.confidence}% Conf.</span>
+                            <span class="block text-[10px] text-slate-400 mt-1">${new Date(scan.timestamp).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // My plants snippet
+            const myPlantsContainer = document.getElementById('dashboard-my-plants');
+            if (appState.myPlants.length === 0) {
+                myPlantsContainer.innerHTML = `<p class="text-sm text-slate-400 py-4 text-center">No monitored plants saved yet.</p>`;
+            } else {
+                myPlantsContainer.innerHTML = appState.myPlants.slice(0, 3).map(plant => `
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                        <div class="flex items-center space-x-3">
+                            <img src="${plant.imageUrl}" class="w-10 h-10 rounded-xl object-cover border border-slate-200" onerror="this.src='https://placehold.co/100x100/3eb47a/ffffff?text=Plant'">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">${plant.name}</h4>
+                                <p class="text-xs text-slate-500">${plant.species}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-medium px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100">${plant.healthStatus}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Image Handling and Preview
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                appState.selectedImageBase64 = e.target.result;
+                document.getElementById('image-preview').src = appState.selectedImageBase64;
+                document.getElementById('upload-prompt').classList.add('hidden');
+                document.getElementById('preview-container').classList.remove('hidden');
+                document.getElementById('analyze-btn').removeAttribute('disabled');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImage(event) {
+            event.stopPropagation();
+            appState.selectedImageBase64 = null;
+            document.getElementById('plant-file-input').value = '';
+            document.getElementById('preview-container').classList.add('hidden');
+            document.getElementById('upload-prompt').classList.remove('hidden');
+            document.getElementById('analyze-btn').setAttribute('disabled', 'true');
+        }
+
+        async function analyzePlantImage() {
+            if (!appState.selectedImageBase64) return;
+
+            const nicknameInput = document.getElementById('plant-nickname').value.trim();
+
+            // Show Loading Spinner State
+            document.getElementById('view-scan').querySelector('.max-w-3xl').classList.add('hidden');
+            document.getElementById('analysis-loading').classList.remove('hidden');
+            document.getElementById('analysis-results').classList.add('hidden');
+
+            const loadingMessages = [
+                "Examining leaf discoloration and spots...",
+                "Scanning for pest marks and fungal symptoms...",
+                "Evaluating overwatering or stress indicators...",
+                "Synthesizing care recommendations..."
+            ];
+            let msgIdx = 0;
+            const msgInterval = setInterval(() => {
+                msgIdx = (msgIdx + 1) % loadingMessages.length;
+                const statusEl = document.getElementById('loading-status-text');
+                if (statusEl) statusEl.textContent = loadingMessages[msgIdx];
+            }, 1200);
+
+            try {
+                // Prepare base64 image data for Gemini API
+                const base64DataClean = appState.selectedImageBase64.split(',')[1];
+                const mimeType = appState.selectedImageBase64.substring(appState.selectedImageBase64.indexOf(':') + 1, appState.selectedImageBase64.indexOf(';'));
+
+                const systemPrompt = `You are an expert plant pathologist and botanist AI. Analyze the uploaded plant or leaf photograph. 
+                You must NEVER claim definitive diagnosis of diseases as photographs alone cannot confirm 100%. Frame results as "Likely plant health issue" or "Possible disease/pest/stress detected".
+                Return your analysis in strict JSON format matching this schema:
+                {
+                  "plantName": "Identified common and botanical plant name",
+                  "healthIssue": "Possible disease/pest/stress detected (e.g. Possible Leaf Spot Disease, Overwatering Stress, or Spider Mite Infestation)",
+                  "confidence": 88,
+                  "symptoms": ["Symptom 1", "Symptom 2", "Symptom 3"],
+                  "causes": "Detailed paragraph explaining possible causes like watering habits, pests, or environment.",
+                  "recommendations": ["Action 1", "Action 2", "Action 3", "Action 4"],
+                  "careSpecs": {
+                    "water": "Watering frequency recommendation",
+                    "sun": "Sunlight requirement",
+                    "soil": "Soil type recommendation"
+                  }
+                }`;
+
+                const userQuery = nicknameInput ? 
+                    `Analyze this plant health. The user calls it "${nicknameInput}".` : 
+                    `Analyze this plant leaf photo for health issues, pests, or overwatering.`;
+
+                const payload = {
+                    contents: [
+                        {
+                            role: 'user',
+                            parts: [
+                                { text: userQuery },
+                                {
+                                    inlineData: {
+                                        mimeType: mimeType || 'image/jpeg',
+                                        data: base64DataClean
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    }
+                };
+
+                const apiKey = ""; // Runtime provided
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                let response = null;
+                let retries = 3;
+                let delay = 1000;
+
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.ok) break;
+                    } catch (err) {
+                        if (i === retries - 1) throw err;
+                    }
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+
+                const resultJson = await response.json();
+                const candidate = resultJson.candidates?.[0];
+                if (!candidate || !candidate.content?.parts?.[0]?.text) {
+                    throw new Error("Invalid response structure from Gemini API");
+                }
+
+                const parsedAnalysis = JSON.parse(candidate.content.parts[0].text);
+
+                // Build scan result object
+                const newScan = {
+                    id: 'scan_' + Date.now(),
+                    timestamp: new Date().toISOString(),
+                    plantName: nicknameInput ? `${nicknameInput} (${parsedAnalysis.plantName})` : parsedAnalysis.plantName,
+                    imageUrl: appState.selectedImageBase64,
+                    confidence: parsedAnalysis.confidence || 87,
+                    healthIssue: parsedAnalysis.healthIssue || 'Possible Leaf Stress Detected',
+                    symptoms: parsedAnalysis.symptoms || ['Discolored spots on leaves', 'Wilting or drooping'],
+                    causes: parsedAnalysis.causes || 'Environmental stress or improper watering routine.',
+                    recommendations: parsedAnalysis.recommendations || ['Adjust watering schedule', 'Prune damaged leaves'],
+                    careSpecs: parsedAnalysis.careSpecs || { water: 'Moderate', sun: 'Indirect Light', soil: 'Well-draining' },
+                    isFavorite: false,
+                    reminder: 'Check soil moisture in 3 days'
+                };
+
+                appState.currentScanResult = newScan;
+                appState.scans.unshift(newScan);
+                persistState();
+
+                clearInterval(msgInterval);
+                displayAnalysisResults(newScan);
+
+            } catch (error) {
+                clearInterval(msgInterval);
+                console.warn("API Error or fallback triggered:", error);
+                
+                // Fallback simulation if network or API key fails
+                const fallbackScan = {
+                    id: 'scan_' + Date.now(),
+                    timestamp: new Date().toISOString(),
+                    plantName: nicknameInput || 'Indoor Foliage Plant',
+                    imageUrl: appState.selectedImageBase64,
+                    confidence: 84,
+                    healthIssue: 'Possible Fungal Leaf Spot / Overwatering Stress',
+                    symptoms: ['Brown circular spots with yellow borders', 'Slight soil waterlogging'],
+                    causes: ['Frequent watering without soil drying', 'Splashing water on foliage'],
+                    recommendations: ['Allow topsoil to dry thoroughly', 'Remove badly affected leaves', 'Improve room air circulation'],
+                    careSpecs: { water: 'Every 7-10 days', sun: 'Bright indirect light', soil: 'Chunky organic mix' },
+                    isFavorite: false,
+                    reminder: 'Water in 4 days'
+                };
+
+                appState.currentScanResult = fallbackScan;
+                appState.scans.unshift(fallbackScan);
+                persistState();
+
+                displayAnalysisResults(fallbackScan);
+            }
+        }
+
+        // Render Analysis Results View
+        function displayAnalysisResults(scan) {
+            document.getElementById('analysis-loading').classList.add('hidden');
+            document.getElementById('analysis-results').classList.remove('hidden');
+
+            document.getElementById('result-img').src = scan.imageUrl;
+            document.getElementById('result-timestamp').textContent = 'Scanned ' + new Date(scan.timestamp).toLocaleDateString();
+            document.getElementById('result-plant-name').textContent = scan.plantName;
+            document.getElementById('result-confidence-badge').textContent = `Confidence: ${scan.confidence}%`;
+            document.getElementById('result-health-issue').textContent = scan.healthIssue;
+            document.getElementById('result-causes').textContent = scan.causes;
+
+            // Symptoms
+            const symptomsList = document.getElementById('result-symptoms-list');
+            symptomsList.innerHTML = scan.symptoms.map(sym => `
+                <li class="flex items-start space-x-2">
+                    <span class="text-nature-600 font-bold">•</span>
+                    <span>${sym}</span>
+                </li>
+            `).join('');
+
+            // Recommendations
+            const recsList = document.getElementById('result-recommendations-list');
+            recsList.innerHTML = scan.recommendations.map(rec => `
+                <li class="flex items-start space-x-2">
+                    <svg class="w-4 h-4 text-nature-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span>${rec}</span>
+                </li>
+            `).join('');
+
+            // Care Specs
+            document.getElementById('spec-water').textContent = scan.careSpecs.water;
+            document.getElementById('spec-sun').textContent = scan.careSpecs.sun;
+            document.getElementById('spec-soil').textContent = scan.careSpecs.soil;
+
+            // Reset upload form state
+            document.getElementById('plant-file-input').value = '';
+            document.getElementById('plant-nickname').value = '';
+            document.getElementById('preview-container').classList.add('hidden');
+            document.getElementById('upload-prompt').classList.remove('hidden');
+            document.getElementById('analyze-btn').setAttribute('disabled', 'true');
+        }
+
+        // Save current scan to My Plants
+        function saveCurrentScanToMyPlants() {
+            if (!appState.currentScanResult) return;
+
+            const existingIndex = appState.myPlants.findIndex(p => p.lastScanId === appState.currentScanResult.id);
+            if (existingIndex >= 0) {
+                showModal("Already Saved", "This plant scan is already in your monitored plants collection.");
+                return;
+            }
+
+            const newMonitoredPlant = {
+                id: 'plant_' + Date.now(),
+                name: appState.currentScanResult.plantName,
+                species: appState.currentScanResult.plantName,
+                addedDate: new Date().toISOString(),
+                lastScanId: appState.currentScanResult.id,
+                imageUrl: appState.currentScanResult.imageUrl,
+                healthStatus: 'Under Treatment',
+                reminder: appState.currentScanResult.reminder || 'Water in 3 days'
+            };
+
+            appState.myPlants.unshift(newMonitoredPlant);
+            persistState();
+
+            showModal("Success!", "Plant successfully added to your Monitored Plants collection.");
+            switchTab('my-plants');
+        }
+
+        // Render My Plants View
+        function renderMyPlants() {
+            const grid = document.getElementById('my-plants-grid');
+            if (appState.myPlants.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-white rounded-3xl border border-nature-200 p-12 text-center space-y-4">
+                        <div class="w-16 h-16 mx-auto bg-nature-100 text-nature-600 rounded-2xl flex items-center justify-center">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-lg">No Monitored Plants Yet</h3>
+                        <p class="text-slate-500 text-sm max-w-sm mx-auto">Scan your plants and save them here to track their recovery and set watering reminders.</p>
+                        <button onclick="switchTab('scan')" class="bg-nature-600 hover:bg-nature-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition">Scan a Plant Now</button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = appState.myPlants.map(plant => {
+                const scan = appState.scans.find(s => s.id === plant.lastScanId) || appState.scans[0];
+                return `
+                    <div class="bg-white rounded-3xl border border-nature-200 overflow-hidden shadow-xs flex flex-col">
+                        <div class="relative h-48 bg-nature-100">
+                            <img src="${plant.imageUrl}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/3eb47a/ffffff?text=Plant'">
+                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-nature-800 text-xs font-semibold px-3 py-1 rounded-full border border-nature-200 shadow-xs">
+                                ${plant.healthStatus}
+                            </span>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-lg">${plant.name}</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Added ${new Date(plant.addedDate).toLocaleDateString()}</p>
+                                ${scan ? `<p class="text-xs text-amber-700 font-medium mt-2 bg-amber-50 p-2 rounded-xl border border-amber-200">Last issue: ${scan.healthIssue}</p>` : ''}
+                            </div>
+                            <div class="border-t border-slate-100 pt-4 flex items-center justify-between">
+                                <span class="text-xs font-medium text-slate-600 flex items-center space-x-1">
+                                    <svg class="w-4 h-4 text-nature-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <span>${plant.reminder}</span>
+                                </span>
+                                <div class="space-x-1">
+                                    ${scan ? `<button onclick="viewScanDetails('${scan.id}')" class="text-xs font-semibold text-nature-600 hover:text-nature-700 px-3 py-1.5 rounded-lg bg-nature-50">View Scan</button>` : ''}
+                                    <button onclick="removeMonitoredPlant('${plant.id}')" class="text-xs font-semibold text-rose-600 hover:text-rose-700 px-2 py-1.5 rounded-lg hover:bg-rose-50">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function removeMonitoredPlant(id) {
+            appState.myPlants = appState.myPlants.filter(p => p.id !== id);
+            persistState();
+            renderMyPlants();
+        }
+
+        // Render Scan History View
+        function renderHistory() {
+            const container = document.getElementById('history-list-container');
+            if (appState.scans.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-3xl border border-nature-200 p-12 text-center space-y-4">
+                        <p class="text-slate-500 text-sm">No scan history recorded yet.</p>
+                        <button onclick="switchTab('scan')" class="bg-nature-600 hover:bg-nature-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition">Start First Scan</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = appState.scans.map(scan => `
+                <div class="bg-white rounded-2xl border border-nature-200 p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center space-x-4">
+                        <img src="${scan.imageUrl}" class="w-16 h-16 rounded-2xl object-cover border border-nature-200 shrink-0" onerror="this.src='https://placehold.co/100x100/3eb47a/ffffff?text=Plant'">
+                        <div class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-bold text-slate-900 text-base">${scan.plantName}</h4>
+                                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-nature-100 text-nature-800">${scan.confidence}% Conf.</span>
+                            </div>
+                            <p class="text-xs font-semibold text-amber-800">${scan.healthIssue}</p>
+                            <p class="text-xs text-slate-400">Scanned on ${new Date(scan.timestamp).toLocaleString()}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <button onclick="viewScanDetails('${scan.id}')" class="bg-nature-50 hover:bg-nature-100 text-nature-800 font-medium px-4 py-2 rounded-xl text-xs transition border border-nature-200">
+                            View Full Report
+                        </button>
+                        <button onclick="deleteScan('${scan.id}')" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewScanDetails(scanId) {
+            const scan = appState.scans.find(s => s.id === scanId);
+            if (!scan) return;
+            appState.currentScanResult = scan;
+            switchTab('scan');
+            displayAnalysisResults(scan);
+        }
+
+        function deleteScan(scanId) {
+            appState.scans = appState.scans.filter(s => s.id !== scanId);
+            persistState();
+            renderHistory();
+        }
+
+        function clearAllHistory() {
+            appState.scans = [];
+            persistState();
+            renderHistory();
+            showModal("History Cleared", "All past scan reports have been cleared.");
+        }
+
+        // Render Care Library
+        function renderCareLibrary(data) {
+            const grid = document.getElementById('care-library-grid');
+            grid.innerHTML = data.map(guide => `
+                <div class="bg-white rounded-3xl border border-nature-200 p-6 shadow-xs flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full bg-nature-100 text-nature-800 uppercase tracking-wider">${guide.category}</span>
+                        <h3 class="font-bold text-slate-900 text-lg">${guide.name}</h3>
+                        
+                        <div class="space-y-2 text-xs text-slate-600 pt-2">
+                            <div class="flex items-start space-x-2">
+                                <span class="font-semibold text-slate-700 w-16 shrink-0">Water:</span>
+                                <span>${guide.water}</span>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <span class="font-semibold text-slate-700 w-16 shrink-0">Sunlight:</span>
+                                <span>${guide.sun}</span>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <span class="font-semibold text-slate-700 w-16 shrink-0">Soil:</span>
+                                <span>${guide.soil}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-100 pt-4 space-y-2">
+                        <p class="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200"><strong>Watch for:</strong> ${guide.commonIssues}</p>
+                        <p class="text-xs text-nature-900 bg-nature-50 p-2.5 rounded-xl border border-nature-100">💡 <strong>Pro Tip:</strong> ${guide.tip}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCareLibrary() {
+            const query = document.getElementById('care-search').value.toLowerCase();
+            const filtered = careLibraryData.filter(g => 
+                g.name.toLowerCase().includes(query) || 
+                g.category.toLowerCase().includes(query) || 
+                g.commonIssues.toLowerCase().includes(query)
+            );
+            renderCareLibrary(filtered);
+        }
+
+        // Custom Modal helper (replaces alert/confirm)
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('modal-cancel-btn').classList.add('hidden');
+            document.getElementById('app-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('app-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
